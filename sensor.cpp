@@ -32,17 +32,11 @@ void startEncoder() {
 }
 
 /**
- * Stops counting slots of the encoder.
+ * Stops counting and slots of the encoder and reset the value to 0.
  */
-void stopEncoder() {
-	counting = false;
-}
-
-/**
- * Resets encoder counter.
- */
-void resetEncoder() {
+void stopAndResetEncoder() {
 	noInterrupts();
+	counting = false;
 	encoderCounter = 0;
 	Interrupts();
 }
@@ -51,7 +45,9 @@ void resetEncoder() {
  * Increases counter everytime encoder pin triggers interrupt.
  */
 void countEncoderISR() {
-	encoderCounter++;
+	if (counting) {
+		encoderCounter++;
+	}
 }
 
 /**
