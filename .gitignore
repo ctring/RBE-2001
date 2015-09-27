@@ -28,5 +28,5 @@
 *.app
 
 # Sublime files
-.sublime-workspace
-.sublime-project
+*.sublime-workspace
+*.sublime-project
