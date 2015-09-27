@@ -43,6 +43,11 @@
 #define A_BIT 0
 #define TO_BLACK_LINE 1 
 
+// Encoder limits for different movements
+#define BACKWARD_LIMIT 50
+#define TURN_180_LIMIT 90
+#define TURN_90_LIMIT 30
+
 bool goForward();
 bool goBackward(int);
 bool turn180();
@@ -50,6 +55,7 @@ bool turn90(int);
 
 void runLeftMotor(int);
 void runRightMotor(int);
+void stopMotors();
 
 void setupMotors();
 
