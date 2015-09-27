@@ -7,33 +7,16 @@
 #ifndef MOVEMENT_H
 #define MOVEMENT_H 
 
-/* 
- * Convention for motor controlling: 
- *
- * ---------------------  
- * | A | B | Direction |
- * ---------------------
- * | 1 | 0 |    CCW    |
- * ---------------------
- * | 0 | 1 |    CW     |
- * ---------------------
- * | 0 | 0 |   Brake   |
- * ---------------------
- * | 1 | 1 |   Brake   |
- * ---------------------
- */
-
-// Left motor pins 
-#define LMOTOR_PIN_A
-#define LMOTOR_PIN_B
-
-// Right motor pins
-#define RMOTOR_PIN_A
-#define RMOTOR_PIN_B
+// Motors pins 
+#define LEFT_MOTOR_PIN
+#define RIGHT_MOTOR_PIN
 
 // Motor speeds
-#define NORMAL_SPEED 255
-#define ADJUSTING_SPEED 200
+#define NORMAL_SPEED_CW 180
+#define NORMAL_SPEED_CCW 0
+#define STOP_SPEED 90
+#define ADJUSTING_SPEED_CW 110
+#define ADJUSTING_SPEED_CCW 70
 
 // Options for robot turning left/right
 #define TURN_LEFT 0

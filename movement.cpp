@@ -4,56 +4,28 @@
  * Created on Sept 26, 2015 by Cuong Nguyen
  */
 #include <Arduino.h>
+#include <Servo.h>
 
 #include "movement.h"
 #include "sensors.h"
+
+Servo leftMotor;
+Servo rightMotor;
 
 /**
  * Setups motors pins mode.
  */
 void setupMotors() {
-	pinMode(LMOTOR_PIN_A, OUTPUT);
-	pinMode(LMOTOR_PIN_B, OUTPUT);
-	pinMode(RMOTOR_PIN_A, OUTPUT);
-	pinMode(RMOTOR_PIN_B, OUTPUT);
-}
-
-/**
- * Runs left motor with given speed.
- *   speed - if speed is larger than 0, motor runs CCW, otherwise motor runs CW.
- */
-void runLeftMotor(int speed) {
-	if (speed >= 0) {
-		analogWrite(LMOTOR_PIN_A, speed);
-		analogWrite(LMOTOR_PIN_B, 0);
-	}
-	else {
-		analogWrite(LMOTOR_PIN_A, 0);
-		analogWrite(LMOTOR_PIN_B, speed);
-	}
-}
-
-/**
- * Runs right motor with given speed.
- *   speed - if speed is larger than 0, motor runs CCW, otherwise motor runs CW.
- */
-void runRightMotor(int speed) {
-	if (speed >= 0) {
-		analogWrite(RMOTOR_PIN_A, speed);
-		analogWrite(RMOTOR_PIN_B, 0);
-	}
-	else {
-		analogWrite(RMOTOR_PIN_A, 0);
-		analogWrite(RMOTOR_PIN_B, speed);
-	}
+	leftMotor.attach(LEFT_MOTOR_PIN);
+	rightMotor.attach(RIGHT_MOTOR_PIN);
 }
 
 /**
  * Stops all motors
  */
 void stopMotors() {
-	runLeftMotor(0);
-	runRightMotor(0);
+	leftMotor.write(STOP_SPEED);
+	rightMotor.write(STOP_SPEED);
 }
 
 /**
@@ -69,20 +41,20 @@ bool goForward() {
 	getLineTrackingVal(ltData);
 
 	if (ltData == 5) {
-		runLeftMotor(NORMAL_SPEED);
-		runRightMotor(-NORMAL_SPEED);
+		leftMotor.write(NORMAL_SPEED_CCW);
+		rightMotor.write(NORMAL_SPEED_CW);
 	}
 	else if (ltData == 2 || ltData == 6 || ltData == 9) {
-		runLeftMotor(NORMAL_SPEED);
-		runRightMotor(-ADJUSTING_SPEED);
+		leftMotor.write(NORMAL_SPEED_CCW);
+		rightMotor.write(ADJUSTING_SPEED_CW);
 	}
 	else if (ltData == 3 || ltData == 8 || ltData == 12) {
-		runLeftMotor(ADJUSTING_SPEED);
-		runRightMotor(-NORMAL_SPEED);
+		leftMotor.write(ADJUSTING_SPEED_CCW);
+		rightMotor.write(NORMAL_SPEED_CW);
 	}
 	else {
-		runLeftMotor(NORMAL_SPEED);
-		runRightMotor(NORMAL_SPEED);
+		leftMotor.write(NORMAL_SPEED_CW);
+		rightMotor.write(NORMAL_SPEED_CCW);
 	}
 	return false;
 }  
@@ -112,20 +84,20 @@ bool goBackward(int mode) {
 	}
 
 	if (ltData == 5) {
-		runLeftMotor(-NORMAL_SPEED);
-		runRightMotor(NORMAL_SPEED);
+		leftMotor.write(NORMAL_SPEED_CW);
+		rightMotor.write(NORMAL_SPEED_CCW);
 	}
 	else if (ltData == 2 || ltData == 6 || ltData == 9) {
-		runLeftMotor(-NORMAL_SPEED);
-		runRightMotor(ADJUSTING_SPEED);
+		leftMotor.write(NORMAL_SPEED_CW);
+		rightMotor.write(ADJUSTING_SPEED_CCW);
 	}
 	else if (ltData == 3 || ltData == 8 || ltData == 12) {
-		runLeftMotor(-ADJUSTING_SPEED);
-		runRightMotor(NORMAL_SPEED);
+		leftMotor.write(ADJUSTING_SPEED_CW);
+		rightMotor.write(NORMAL_SPEED_CCW);
 	}
 	else {
-		runLeftMotor(NORMAL_SPEED);
-		runRightMotor(NORMAL_SPEED);
+		leftMotor.write(NORMAL_SPEED_CW);
+		rightMotor.write(NORMAL_SPEED_CCW);
 	}
 	return false;
 }
@@ -141,8 +113,8 @@ bool turn180() {
 		stopAndResetEncoder();
 		return true;
 	}
-	runLeftMotor(NORMAL_SPEED);
-	runRightMotor(NORMAL_SPEED);
+	leftMotor.write(NORMAL_SPEED_CW);
+	rightMotor.write(NORMAL_SPEED_CCW);
 	return false;
 }
 
@@ -161,11 +133,11 @@ void turn90(int direction) {
 		return true;	
 	}
 	if (direction == TURN_LEFT) {
-		runLeftMotor(-NORMAL_SPEED);
-		runRightMotor(NORMAL_SPEED);
+		leftMotor.write(NORMAL_SPEED_CW);
+		rightMotor.write(NORMAL_SPEED_CCW);
 	} else {
-		runLeftMotor(NORMAL_SPEED);
-		runRightMotor(-NORMAL_SPEED);
+		leftMotor.write(NORMAL_SPEED_CCW);
+		rightMotor.write(NORMAL_SPEED_CW);
 	}
 	return false;
 }
