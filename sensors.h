@@ -24,7 +24,7 @@
 #define LT_RIGHT_PIN 		0
 
 // LT sensor value larger than LT_BORDER means it is on black line.
-#define LT_BORDER       0
+#define LT_BORDER			0
 #define toDigital(x) (x > LT_BORDER)
 
 // Limit switches pins
