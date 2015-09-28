@@ -1,5 +1,11 @@
+#include <Servo.h>
+
+#include "sensors.h"
+#include "movement.h"
+#include "arm.h"
+
 void setup() {
-  // put your setup code here, to run once:
+  
 }
 
 void loop() {

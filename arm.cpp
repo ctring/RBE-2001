@@ -4,11 +4,7 @@
  * Created on Sept 27, 2015 by Cuong Nguyen
  */
 
-#include <Arduino.h>
-#include <Servo.h>
-
 #include "arm.h"
-#include "sensors.h"
 
 Servo gripper;
 Servo crane;

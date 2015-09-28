@@ -6,20 +6,25 @@
 #ifndef ARM_H
 #define ARM_H
 
-#define CRANE_PIN
-#define SLIDER_PIN 
-#define GRIPPER_PIN
+#include <Arduino.h>
+#include <Servo.h>
 
-#define CRANE_TO_HOR 0
-#define CRANE_TO_VER 180
-#define CRANE_STOP 90
+#include "sensors.h"
 
-#define SLIDER_IN 0
-#define SLIDER_OUT 180
-#define SLIDER_STOP 90
+#define CRANE_PIN 		0
+#define SLIDER_PIN 		0
+#define GRIPPER_PIN		0
 
-#define GRIPPER_OPEN 180
-#define GRIPPER_CLOSE 0
+#define CRANE_TO_HOR 	0
+#define CRANE_TO_VER 	180
+#define CRANE_STOP 		90
+
+#define SLIDER_IN 		0
+#define SLIDER_OUT 		180
+#define SLIDER_STOP 	90
+
+#define GRIPPER_OPEN 	180
+#define GRIPPER_CLOSE 	0
 
 void setupArm();
 

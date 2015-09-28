@@ -6,8 +6,10 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
+#include <Arduino.h>
+
 // Sensor pins
-#define ENCODER_PIN 
+#define ENCODER_PIN 		0
 
 // Line tracking sensor pins
 /**
@@ -16,21 +18,21 @@
  *		3		1
  *			2
  */
-#define LT_FRONT_PIN
-#define LT_BACK_PIN
-#define LT_LEFT_PIN
-#define LT_RIGHT_PIN
+#define LT_FRONT_PIN 		0
+#define LT_BACK_PIN 		0
+#define LT_LEFT_PIN 		0
+#define LT_RIGHT_PIN 		0
 
 // LT sensor value larger than LT_BORDER means it is on black line.
-#define LT_BORDER
+#define LT_BORDER       0
 #define toDigital(x) (x > LT_BORDER)
 
 // Limit switches pins
-#define LIMIT_FRONT_PIN
-#define LIMIT_CRANE_HOR_PIN
-#define LIMIT_CRANE_VER_PIN
-#define LIMIT_SLIDE_IN_PIN
-#define LIMIT_SLIDE_OUT_PIN
+#define LIMIT_FRONT_PIN		0
+#define LIMIT_CRANE_HOR_PIN	0
+#define LIMIT_CRANE_VER_PIN	0
+#define LIMIT_SLIDE_IN_PIN	0
+#define LIMIT_SLIDE_OUT_PIN	0
 
 void setupSensors();
 
@@ -39,7 +41,7 @@ void stopAndResetEncoder();
 void countEncoderISR();
 int getEncoder();
 
-void getLineTrackingVal(int&);
+int getLineTrackingVal();
 
 bool checkLimitSwitch(int);
 

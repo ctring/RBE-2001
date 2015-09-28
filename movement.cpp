@@ -3,11 +3,8 @@
  *
  * Created on Sept 26, 2015 by Cuong Nguyen
  */
-#include <Arduino.h>
-#include <Servo.h>
 
 #include "movement.h"
-#include "sensors.h"
 
 Servo leftMotor;
 Servo rightMotor;
@@ -33,12 +30,11 @@ void stopMotors() {
  *   return true if front limit switch is closed, false otherwise.
  */
 bool goForward() {
-	if (checkLimitSwitch(LIMIT_FRONT)) {
+	if (checkLimitSwitch(LIMIT_FRONT_PIN)) {
 		stopMotors();
 		return true;
 	}
-	int ltData = 0;
-	getLineTrackingVal(ltData);
+	int ltData = getLineTrackingVal();
 
 	if (ltData == 5) {
 		leftMotor.write(NORMAL_SPEED_CCW);
@@ -75,8 +71,7 @@ bool goBackward(int mode) {
 		return true;
 	}
 
-	int ltData = 0;
-	getLineTrackingVal(ltData);
+	int ltData = getLineTrackingVal();
  
 	if (mode == TO_BLACK_LINE && ltData == 10) {
 		stopMotors();
@@ -125,7 +120,7 @@ bool turn180() {
  *		TURN_LEFT robot turns left.
  *		TURN_RIGHT robot turns right.
  */ 
-void turn90(int direction) {
+bool turn90(int direction) {
 	startEncoder();
 	if (getEncoder() >= TURN_90_LIMIT) {
 		stopMotors();

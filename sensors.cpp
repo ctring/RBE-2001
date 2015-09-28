@@ -3,7 +3,7 @@
  *
  * Created on Sept 26, 2015 by Cuong Nguyen
  */
-#include <Arduino.h>
+
 #include "sensors.h"
 
 volatile int encoderCounter = 0;
@@ -14,8 +14,8 @@ volatile bool counting = false;
  */
 void setupSensors() {
 	pinMode(LIMIT_FRONT_PIN, 	 INPUT_PULLUP);
-	pinMode(LIMIT_0_DEGREE_PIN,  INPUT_PULLUP);
-	pinMode(LIMIT_90_DEGREE_PIN, INPUT_PULLUP);
+	pinMode(LIMIT_CRANE_HOR_PIN,  INPUT_PULLUP);
+	pinMode(LIMIT_CRANE_VER_PIN, INPUT_PULLUP);
 	pinMode(LIMIT_SLIDE_IN_PIN,  INPUT_PULLUP);
 	pinMode(LIMIT_SLIDE_OUT_PIN, INPUT_PULLUP);
 
@@ -38,7 +38,7 @@ void stopAndResetEncoder() {
 	noInterrupts();
 	counting = false;
 	encoderCounter = 0;
-	Interrupts();
+	interrupts();
 }
 
 /**
@@ -56,7 +56,7 @@ void countEncoderISR() {
 int getEncoder() {
 	noInterrupts();
 	int ret = encoderCounter;
-	interrupt();
+	interrupts();
 	return ret;
 }
 
@@ -64,7 +64,7 @@ int getEncoder() {
  * Gets line tracking value
  *   dest - an array of four values reprensting the four sensors
  */
-void getLineTrackingVal(int* dest) {
+int getLineTrackingVal() {
 	return toDigital(analogRead(LT_FRONT_PIN)) 
 			| (toDigital(analogRead(LT_LEFT_PIN)) << 1)
 			| (toDigital(analogRead(LT_BACK_PIN)) << 2)
