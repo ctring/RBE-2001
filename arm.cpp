@@ -3,7 +3,9 @@
  *
  * Created on Sept 27, 2015 by Cuong Nguyen
  */
-
+#include <Arduino.h>
+#include <Servo.h>
+#include "sensors.h"
 #include "arm.h"
 
 Servo gripper;

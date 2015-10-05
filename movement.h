@@ -10,41 +10,36 @@
 #include <Arduino.h>
 #include <Servo.h>
 
- #include "sensors.h"
-
 // Motors pins 
-#define LEFT_MOTOR_PIN		0
-#define RIGHT_MOTOR_PIN		0
+#define LEFT_MOTOR_PIN		4
+#define RIGHT_MOTOR_PIN		5
 
 // Motor speeds
-#define NORMAL_SPEED_CW 	180
-#define NORMAL_SPEED_CCW 	0
+#define NORMAL_SPEED_CCW  	28
+#define NORMAL_SPEED_CW		155
 #define STOP_SPEED 			90
-#define ADJUSTING_SPEED_CW 	110
-#define ADJUSTING_SPEED_CCW 70
 
 // Options for robot turning left/right
-#define TURN_LEFT 			0
-#define TURN_RIGHT 			1
-
-// Options for robot go back a bit or until touch black line
-#define A_BIT 				0
-#define TO_BLACK_LINE 		1 
+#define LEFT 				0
+#define RIGHT 				1
 
 // Encoder limits for different movements
-#define BACKWARD_LIMIT 		50
-#define TURN_180_LIMIT 		90
-#define TURN_90_LIMIT 		30
+#define BACKWARD_ENCODER		50
+#define TURN_180_ENCODER 		110
+#define TURN_90_ENCODER 		55
 
-bool goForward();
-bool goBackward(int);
+void setupMotors();
+
+bool goForward(bool);
+bool calcNextLine();
+bool switchSide();
+bool goForwardAndCount();
+bool goBackward();
 bool turn180();
 bool turn90(int);
 
 void runLeftMotor(int);
 void runRightMotor(int);
 void stopMotors();
-
-void setupMotors();
 
 #endif

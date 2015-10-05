@@ -6,8 +6,6 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include <Arduino.h>
-
 // Sensor pins
 #define ENCODER_LEFT_PIN 	2
 #define ENCODER_RIGHT_PIN   3

@@ -3,7 +3,7 @@
  *
  * Created on Sept 26, 2015 by Cuong Nguyen
  */
-
+#include "sensors.h"
 #include "movement.h"
 
 Servo leftMotor;
@@ -26,75 +26,102 @@ void stopMotors() {
 }
 
 /**
- * Controls robot to go forward.
- *   return true if front limit switch is closed, false otherwise.
+ * Controls robot to go forward until the front limit switch is closed.
+ * @param reversed reverse the motion if set to true.
+ * @return true if front limit switch is closed, false otherwise.
  */
-bool goForward() {
+bool goForward(bool reversed) {
 	if (checkLimitSwitch(LIMIT_FRONT_PIN)) {
 		stopMotors();
 		return true;
 	}
-	int ltData = getLineTrackingVal();
+	int ltData[5];
+	getLineTrackingVal(ltData);
 
-	if (ltData == 5) {
-		leftMotor.write(NORMAL_SPEED_CCW);
-		rightMotor.write(NORMAL_SPEED_CW);
-	}
-	else if (ltData == 2 || ltData == 6 || ltData == 9) {
-		leftMotor.write(NORMAL_SPEED_CCW);
-		rightMotor.write(ADJUSTING_SPEED_CW);
-	}
-	else if (ltData == 3 || ltData == 8 || ltData == 12) {
-		leftMotor.write(ADJUSTING_SPEED_CCW);
-		rightMotor.write(NORMAL_SPEED_CW);
-	}
-	else {
-		leftMotor.write(NORMAL_SPEED_CW);
-		rightMotor.write(NORMAL_SPEED_CCW);
+	int count = ltData[0] + ltData[1] + ltData[2] + ltData[3] + ltData[4];
+
+	int sum4 = ltData[0] * (-2) + ltData[1] * (-1)  + ltData[2] + ltData[3] * 2;
+	double err = sum4 / count;
+	int sp = err * 45;
+	if (sp > 0) {
+		if (!reversed) {
+			leftMotor.write(NORMAL_SPEED_CCW);
+			rightMotor.write(NORMAL_SPEED_CW - sp);
+		} else {
+			leftMotor.write(NORMAL_SPEED_CW);
+			rightMotor.write(NORMAL_SPEED_CCW + sp);
+		}
+	} else {
+		if (!reversed) {
+			leftMotor.write(NORMAL_SPEED_CCW - sp);
+			rightMotor.write(NORMAL_SPEED_CW);
+		} else {
+			leftMotor.write(NORMAL_SPEED_CW + sp);
+			rightMotor.write(NORMAL_SPEED_CCW);
+		}
 	}
 	return false;
-}  
+}
 
 /**
- * Controls robot to go backward. 
- * 	 mode - how far the robot go  
- * 		A_BIT go backward for a few slots of encoder. Reset and start encoder 
- * 		counter before using this mode.
- *  	TO_BLACK_LINE go backward until line tracker detects a horizontal line.
- *   return true if the limit specified by mode is reached, false otherwise.
+ * Controls robot to go backward until hitting a horizontal line.
+ * @return true if the line is hit, false otherwise.
  */
-bool goBackward(int mode) {
-	startEncoder();
-	if (mode == A_BIT && getEncoder() >= BACKWARD_LIMIT) {
-		stopMotors();
-		stopAndResetEncoder();
-		return true;
-	}
-
-	int ltData = getLineTrackingVal();
- 
-	if (mode == TO_BLACK_LINE && ltData == 10) {
+bool goBackward() {
+	if (checkHorizontalLine()) {
 		stopMotors();
 		return true;
 	}
+	return goForward(true);
+}
 
-	if (ltData == 5) {
-		leftMotor.write(NORMAL_SPEED_CW);
-		rightMotor.write(NORMAL_SPEED_CCW);
+int side = 0;
+int currentLine = 0;
+int targetLineCount = 0;
+int lineCounted = 0;
+bool lineDetected = false;
+/**
+ * Controls robot to go forward or backward then stops after counted a number of 
+ * lines. 
+ * @param  	lines number of lines to count before stopping. If lines is larger than
+ *          0 then the robot goes forward, otherwise the robot goes backward.
+ * @return	true after counting finishes, false otherwise.
+ */
+bool goForwardAndCount() {
+	if (lineCounted == abs(targetLineCount)) {
+		lineCounted = 0;
+		lineDetected = false;
+		stopMotors();
+		return true;
 	}
-	else if (ltData == 2 || ltData == 6 || ltData == 9) {
-		leftMotor.write(NORMAL_SPEED_CW);
-		rightMotor.write(ADJUSTING_SPEED_CCW);
+	if (lineDetected) {
+		lineDetected = false;
+		lineCounted++;
 	}
-	else if (ltData == 3 || ltData == 8 || ltData == 12) {
-		leftMotor.write(ADJUSTING_SPEED_CW);
-		rightMotor.write(NORMAL_SPEED_CCW);
+	if (checkHorizontalLine()) {
+		lineDetected = true;
 	}
-	else {
-		leftMotor.write(NORMAL_SPEED_CW);
-		rightMotor.write(NORMAL_SPEED_CCW);
+	if (goForward(targetLineCount < 0)) {
+		stopMotors();
+		return true;
 	}
-	return false;
+}
+
+/**
+ * Computes next line based on the current line
+ * @return true
+ */
+bool calcNextLine() {
+	return true;	
+}
+
+/**
+ * Switches side to other reactor.
+ * @return true
+ */
+bool switchSide() {
+	
+	return true;
 }
 
 /**
@@ -103,36 +130,38 @@ bool goBackward(int mode) {
  */
 bool turn180() {
 	startEncoder();
-	if (getEncoder() >= TURN_180_LIMIT) {
+	if (getLeftEncoder() >= TURN_180_ENCODER &&
+		getRightEncoder() >= TURN_180_ENCODER) {
 		stopMotors();
 		stopAndResetEncoder();
 		return true;
 	}
 	leftMotor.write(NORMAL_SPEED_CW);
-	rightMotor.write(NORMAL_SPEED_CCW);
+	rightMotor.write(NORMAL_SPEED_CW);
 	return false;
 }
 
 /**
  * Turns robot 90 degrees. Reset and start encoder counter before using this.
  * Encoder is stopped when the limit is reached.
- *   direction - whether the robot turns left or right 
+ * @param direction whether the robot turns left or right 
  *		TURN_LEFT robot turns left.
  *		TURN_RIGHT robot turns right.
  */ 
 bool turn90(int direction) {
 	startEncoder();
-	if (getEncoder() >= TURN_90_LIMIT) {
+	if (getLeftEncoder() >= TURN_90_ENCODER &&
+		getRightEncoder() >= TURN_90_ENCODER) {
 		stopMotors();
 		stopAndResetEncoder();
 		return true;	
 	}
-	if (direction == TURN_LEFT) {
+	if (direction == LEFT) {
 		leftMotor.write(NORMAL_SPEED_CW);
-		rightMotor.write(NORMAL_SPEED_CCW);
+		rightMotor.write(NORMAL_SPEED_CW);
 	} else {
 		leftMotor.write(NORMAL_SPEED_CCW);
-		rightMotor.write(NORMAL_SPEED_CW);
+		rightMotor.write(NORMAL_SPEED_CCW);
 	}
 	return false;
 }

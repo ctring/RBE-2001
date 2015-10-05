@@ -3,7 +3,7 @@
  *
  * Created on Sept 26, 2015 by Cuong Nguyen
  */
-
+#include <Arduino.h>
 #include "sensors.h"
 
 volatile int encoderLeftCounter = 0;

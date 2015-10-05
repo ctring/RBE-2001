@@ -6,11 +6,6 @@
 #ifndef ARM_H
 #define ARM_H
 
-#include <Arduino.h>
-#include <Servo.h>
-
-#include "sensors.h"
-
 #define CRANE_PIN 		0
 #define SLIDER_PIN 		0
 #define GRIPPER_PIN		0
